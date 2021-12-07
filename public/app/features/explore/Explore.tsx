@@ -326,6 +326,33 @@ export class Explore extends React.PureComponent<Props, ExploreState> {
     );
   }
 
+  renderCodeViewPanel() {
+    const { queryResponse, splitOpen, exploreId } = this.props;
+
+    console.log('series?');
+    console.log(queryResponse.series.length);
+    const dataFrames = queryResponse.series.filter((series) => {
+      console.log('meta ', series.meta);
+      console.log('custom ', series.meta?.custom);
+      return series.meta?.custom?.Code === true;
+    });
+
+    console.log('Yes I am a code ');
+    console.log(dataFrames.length);
+
+    return (
+      // If there is no data (like 404) we show a separate error so no need to show anything here
+      dataFrames.length && (
+        <TraceViewContainer
+          exploreId={exploreId}
+          dataFrames={dataFrames}
+          splitOpenFn={splitOpen}
+          scrollElement={this.scrollElement}
+        />
+      )
+    );
+  }
+
   render() {
     const {
       datasourceInstance,

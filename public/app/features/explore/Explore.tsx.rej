@@ -1,0 +1,16 @@
+***************
+*** 391,396 ****
+                            {showLogs && <ErrorBoundaryAlert>{this.renderLogsPanel(width)}</ErrorBoundaryAlert>}
+                            {showNodeGraph && <ErrorBoundaryAlert>{this.renderNodeGraphPanel()}</ErrorBoundaryAlert>}
+                            {showTrace && <ErrorBoundaryAlert>{this.renderTraceViewPanel()}</ErrorBoundaryAlert>}
+                          </>
+                        )}
+                        {showRichHistory && (
+--- 418,424 ----
+                            {showLogs && <ErrorBoundaryAlert>{this.renderLogsPanel(width)}</ErrorBoundaryAlert>}
+                            {showNodeGraph && <ErrorBoundaryAlert>{this.renderNodeGraphPanel()}</ErrorBoundaryAlert>}
+                            {showTrace && <ErrorBoundaryAlert>{this.renderTraceViewPanel()}</ErrorBoundaryAlert>}
++                           {true && <ErrorBoundaryAlert>{this.renderCodeViewPanel()}</ErrorBoundaryAlert>}
+                          </>
+                        )}
+                        {showRichHistory && (

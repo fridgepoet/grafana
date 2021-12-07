@@ -1,0 +1,19 @@
+***************
+*** 407,413 ****
+    view.forEach((row: { line: string }) => {
+      for (const field of newFields) {
+        const logMatch = row.line.match(derivedFieldsGrouped[field.name][0].matcherRegex);
+-       field.values.add(logMatch && logMatch[1]);
+      }
+    });
+  
+--- 407,415 ----
+    view.forEach((row: { line: string }) => {
+      for (const field of newFields) {
+        const logMatch = row.line.match(derivedFieldsGrouped[field.name][0].matcherRegex);
++       if (logMatch) {
++         field.values.add(logMatch.slice(1).join(";"))
++       }
+      }
+    });
+  
