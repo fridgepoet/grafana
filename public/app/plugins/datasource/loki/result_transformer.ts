@@ -407,7 +407,9 @@ export const enhanceDataFrame = (dataFrame: DataFrame, config: LokiOptions | nul
   view.forEach((row: { line: string }) => {
     for (const field of newFields) {
       const logMatch = row.line.match(derivedFieldsGrouped[field.name][0].matcherRegex);
-      field.values.add(logMatch && logMatch[1]);
+      if (logMatch) {
+        field.values.add(logMatch.slice(1).join(';'));
+      }
     }
   });
 
