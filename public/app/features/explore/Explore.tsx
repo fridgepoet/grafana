@@ -31,6 +31,7 @@ import { ExploreGraph } from './ExploreGraph';
 import { LogsVolumePanel } from './LogsVolumePanel';
 import { ExploreGraphLabel } from './ExploreGraphLabel';
 import { ExploreGraphStyle } from 'app/core/utils/explore';
+import { CodeContainer } from './CodeContainer';
 
 const getStyles = (theme: GrafanaTheme2) => {
   return {
@@ -299,31 +300,21 @@ export class Explore extends React.PureComponent<Props, ExploreState> {
     );
   }
 
-  renderCodeViewPanel() {
-    const { queryResponse, splitOpen, exploreId } = this.props;
+  isShowCode() {
+    const { queryResponse } = this.props;
 
-    console.log('series?');
-    console.log(queryResponse.series.length);
     const dataFrames = queryResponse.series.filter((series) => {
-      console.log('meta ', series.meta);
-      console.log('custom ', series.meta?.custom);
       return series.meta?.custom?.Code === true;
     });
 
-    console.log('Yes I am a code ');
-    console.log(dataFrames.length);
+    console.log('isShowCode ', dataFrames.length);
+    return dataFrames.length > 0;
+  }
 
-    return (
-      // If there is no data (like 404) we show a separate error so no need to show anything here
-      dataFrames.length && (
-        <TraceViewContainer
-          exploreId={exploreId}
-          dataFrames={dataFrames}
-          splitOpenFn={splitOpen}
-          scrollElement={this.scrollElement}
-        />
-      )
-    );
+  renderCodeViewPanel() {
+    const { exploreId } = this.props;
+
+    return <CodeContainer exploreId={exploreId} />;
   }
 
   render() {
@@ -347,6 +338,8 @@ export class Explore extends React.PureComponent<Props, ExploreState> {
     const showPanels = queryResponse && queryResponse.state !== LoadingState.NotStarted;
     const showRichHistory = openDrawer === ExploreDrawer.RichHistory;
     const showQueryInspector = openDrawer === ExploreDrawer.QueryInspector;
+
+    const showCode = this.isShowCode();
 
     return (
       <CustomScrollbar
@@ -383,15 +376,20 @@ export class Explore extends React.PureComponent<Props, ExploreState> {
                     <ErrorBoundaryAlert>
                       {showPanels && (
                         <>
-                          {showMetrics && graphResult && (
-                            <ErrorBoundaryAlert>{this.renderGraphPanel(width)}</ErrorBoundaryAlert>
+                          {showCode ? (
+                            <ErrorBoundaryAlert>{this.renderCodeViewPanel()}</ErrorBoundaryAlert>
+                          ) : (
+                            <>
+                              {showMetrics && graphResult && (
+                                <ErrorBoundaryAlert>{this.renderGraphPanel(width)}</ErrorBoundaryAlert>
+                              )}
+                              {<ErrorBoundaryAlert>{this.renderLogsVolume(width)}</ErrorBoundaryAlert>}
+                              {showTable && <ErrorBoundaryAlert>{this.renderTablePanel(width)}</ErrorBoundaryAlert>}
+                              {showLogs && <ErrorBoundaryAlert>{this.renderLogsPanel(width)}</ErrorBoundaryAlert>}
+                              {showNodeGraph && <ErrorBoundaryAlert>{this.renderNodeGraphPanel()}</ErrorBoundaryAlert>}
+                              {showTrace && <ErrorBoundaryAlert>{this.renderTraceViewPanel()}</ErrorBoundaryAlert>}
+                            </>
                           )}
-                          {<ErrorBoundaryAlert>{this.renderLogsVolume(width)}</ErrorBoundaryAlert>}
-                          {showTable && <ErrorBoundaryAlert>{this.renderTablePanel(width)}</ErrorBoundaryAlert>}
-                          {showLogs && <ErrorBoundaryAlert>{this.renderLogsPanel(width)}</ErrorBoundaryAlert>}
-                          {showNodeGraph && <ErrorBoundaryAlert>{this.renderNodeGraphPanel()}</ErrorBoundaryAlert>}
-                          {showTrace && <ErrorBoundaryAlert>{this.renderTraceViewPanel()}</ErrorBoundaryAlert>}
-                          {true && <ErrorBoundaryAlert>{this.renderCodeViewPanel()}</ErrorBoundaryAlert>}
                         </>
                       )}
                       {showRichHistory && (
