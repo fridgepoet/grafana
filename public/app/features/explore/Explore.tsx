@@ -312,9 +312,9 @@ export class Explore extends React.PureComponent<Props, ExploreState> {
   }
 
   renderCodeViewPanel() {
-    const { exploreId } = this.props;
+    const { queryResponse, exploreId } = this.props;
 
-    return <CodeContainer exploreId={exploreId} />;
+    return <CodeContainer dataFrames={queryResponse.series} exploreId={exploreId} />;
   }
 
   render() {
@@ -340,6 +340,7 @@ export class Explore extends React.PureComponent<Props, ExploreState> {
     const showQueryInspector = openDrawer === ExploreDrawer.QueryInspector;
 
     const showCode = this.isShowCode();
+    console.log('in Explore render ', showCode);
 
     return (
       <CustomScrollbar
