@@ -34,13 +34,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.es6', '.js', '.json', '.svg'],
-    alias: {
-      // storybook v6 bump caused the app to bundle multiple versions of react breaking hooks
-      // make sure to resolve only from the project: https://github.com/facebook/react/issues/13991#issuecomment-435587809
-      // some of data source pluginis use global Prism object to add the language definition
-      // we want to have same Prism object in core and in grafana/ui
-      prismjs: require.resolve('prismjs'),
-    },
+
     modules: ['node_modules', path.resolve('public')],
     fallback: {
       buffer: false,

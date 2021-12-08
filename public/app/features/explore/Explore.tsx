@@ -31,7 +31,7 @@ import { ExploreGraph } from './ExploreGraph';
 import { LogsVolumePanel } from './LogsVolumePanel';
 import { ExploreGraphLabel } from './ExploreGraphLabel';
 import { ExploreGraphStyle } from 'app/core/utils/explore';
-import { CodeContainer } from './CodeContainer';
+import CodeContainer from './CodeContainer';
 
 const getStyles = (theme: GrafanaTheme2) => {
   return {
