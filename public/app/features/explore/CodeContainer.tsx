@@ -46,11 +46,26 @@ export class CodeContainer extends PureComponent<Props> {
     console.log('codeValue');
     console.log(codeValue);
 
-    const language = 'python';
+    const lineNumber = parseInt(codeField.values.toArray()[1], 10);
+    console.log('lineNumber');
+    console.log(lineNumber);
+
+    const language = 'go';
 
     return (
       <div>
-        <SyntaxHighlighter language={language} wrapLines={true} showLineNumbers={true}>
+        <SyntaxHighlighter
+          language={language}
+          wrapLines={true}
+          showLineNumbers={true}
+          lineProps={(n: number) => {
+            let style = {};
+            if (n === lineNumber) {
+              style.backgroundColor = '#ffecec';
+            }
+            return { style };
+          }}
+        >
           {String(codeValue)}
         </SyntaxHighlighter>
       </div>
