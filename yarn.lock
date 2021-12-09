@@ -9604,6 +9604,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-syntax-highlighter@npm:13.5.2":
+  version: 13.5.2
+  resolution: "@types/react-syntax-highlighter@npm:13.5.2"
+  dependencies:
+    "@types/react": "*"
+  checksum: 237cb596368f7c2c8549d0150308cd5fe633d249b6e20bebb4e242bc1172b60e808db2a57d212f409ab3fee37f47b8465ac35c4754e814d7e0f53cc1b2dd14ea
+  languageName: node
+  linkType: hard
+
 "@types/react-table@npm:7.7.2":
   version: 7.7.2
   resolution: "@types/react-table@npm:7.7.2"
@@ -19111,6 +19120,7 @@ __metadata:
     "@types/react-loadable": 5.5.2
     "@types/react-redux": 7.1.20
     "@types/react-router-dom": ^5.1.7
+    "@types/react-syntax-highlighter": 13.5.2
     "@types/react-test-renderer": 17.0.1
     "@types/react-transition-group": 4.4.0
     "@types/react-virtualized-auto-sizer": 1.0.0
@@ -19260,6 +19270,7 @@ __metadata:
     react-select: 5.2.1
     react-select-event: ^5.1.0
     react-split-pane: 0.1.89
+    react-syntax-highlighter: 15.4.5
     react-test-renderer: 17.0.1
     react-transition-group: 4.4.1
     react-use: 17.2.4
@@ -19624,7 +19635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highlight.js@npm:^10.1.1, highlight.js@npm:~10.7.0":
+"highlight.js@npm:^10.1.1, highlight.js@npm:^10.4.1, highlight.js@npm:~10.7.0":
   version: 10.7.3
   resolution: "highlight.js@npm:10.7.3"
   checksum: defeafcd546b535d710d8efb8e650af9e3b369ef53e28c3dc7893eacfe263200bba4c5fcf43524ae66d5c0c296b1af0870523ceae3e3104d24b7abf6374a4fea
@@ -23756,7 +23767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lowlight@npm:^1.14.0":
+"lowlight@npm:^1.14.0, lowlight@npm:^1.17.0":
   version: 1.20.0
   resolution: "lowlight@npm:1.20.0"
   dependencies:
@@ -27878,7 +27889,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:1.25.0, prismjs@npm:^1.21.0, prismjs@npm:~1.25.0":
+"prismjs@npm:1.25.0, prismjs@npm:^1.21.0, prismjs@npm:^1.25.0, prismjs@npm:~1.25.0":
   version: 1.25.0
   resolution: "prismjs@npm:1.25.0"
   checksum: 04d8eae9d1b26b76c350bc65621584c8f8cab80ace7da3953f8aef2f9a8dd4b4f71c1d15bc5c67f126ddc90cd5af613919dc1340589a6c57355bed86fa3ac010
@@ -29338,6 +29349,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-syntax-highlighter@npm:15.4.5":
+  version: 15.4.5
+  resolution: "react-syntax-highlighter@npm:15.4.5"
+  dependencies:
+    "@babel/runtime": ^7.3.1
+    highlight.js: ^10.4.1
+    lowlight: ^1.17.0
+    prismjs: ^1.25.0
+    refractor: ^3.2.0
+  peerDependencies:
+    react: ">= 0.14.0"
+  checksum: 120bac5cfbd65eb47e513b8057e3cb71843ce15241bbf933c1818c294965b87d8e074c7929a8fc2ced66c3e3f38c4cc6bf04365a8345e3a382cd524d0093949f
+  languageName: node
+  linkType: hard
+
 "react-syntax-highlighter@npm:^13.5.3":
   version: 13.5.3
   resolution: "react-syntax-highlighter@npm:13.5.3"
@@ -29807,7 +29833,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"refractor@npm:^3.1.0":
+"refractor@npm:^3.1.0, refractor@npm:^3.2.0":
   version: 3.5.0
   resolution: "refractor@npm:3.5.0"
   dependencies:
