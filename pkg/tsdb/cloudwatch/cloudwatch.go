@@ -259,6 +259,18 @@ func (e *cloudWatchExecutor) alertQuery(ctx context.Context, logsClient cloudwat
 	return nil, nil
 }
 
+type cloudWatchRequestParams struct {
+	cloudWatchModel
+	QueryId string `json:"queryId"`
+}
+
+type cloudWatchModel struct {
+	Region    string `json:"region"`
+	QueryMode string `json:"queryMode"`
+	Type      string `json:"type"`
+	Subtype   string `json:"subtype"`
+}
+
 func (e *cloudWatchExecutor) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	/*
 		Unlike many other data sources, with Cloudwatch Logs query requests don't receive the results as the response
