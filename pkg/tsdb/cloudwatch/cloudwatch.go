@@ -265,10 +265,18 @@ type cloudWatchRequestParams struct {
 }
 
 type cloudWatchModel struct {
-	Region    string `json:"region"`
-	QueryMode string `json:"queryMode"`
-	Type      string `json:"type"`
-	Subtype   string `json:"subtype"`
+	Region          string                 `json:"region"`
+	QueryMode       string                 `json:"queryMode"`
+	Type            string                 `json:"type"`
+	Subtype         string                 `json:"subtype"`
+	PrefixMatching  bool                   `json:"prefixMatching"`
+	Namespace       string                 `json:"namespace"`
+	MetricName      string                 `json:"metricName"`
+	Dimensions      map[string]interface{} `json:"dimensions"`
+	Statistic       string                 `json:"statistic"`
+	Period          int                    `json:"period"`
+	ActionPrefix    string                 `json:"actionPrefix"`
+	AlarmNamePrefix string                 `json:"alarmNamePrefix"`
 }
 
 func (e *cloudWatchExecutor) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
