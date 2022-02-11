@@ -25,7 +25,6 @@ func TestQuery_AnnotationQuery(t *testing.T) {
 	})
 
 	var client CWClientMock
-
 	NewCWClient = func(sess *session.Session) cloudwatchiface.CloudWatchAPI {
 		return &client
 	}
