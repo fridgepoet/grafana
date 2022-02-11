@@ -80,54 +80,60 @@ func TestQuery_AnnotationQuery(t *testing.T) {
 			}, resp)
 	})
 
-	//t.Run("with DescribeAlarms", func(t *testing.T) {
-	//	client = CWClientMock{}
-	//	im := datasource.NewInstanceManager(func(s backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
-	//		return datasourceInfo{}, nil
-	//	})
-	//
-	//	executor := newExecutor(im, newTestConfig(), fakeSessionCache{})
-	//	resp, err := executor.QueryData(context.Background(), &backend.QueryDataRequest{
-	//		PluginContext: backend.PluginContext{
-	//			DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
-	//		},
-	//		Queries: []backend.DataQuery{
-	//			{
-	//				JSON: json.RawMessage(`{
-	//					"type":    "annotationQuery",
-	//					"region":    "us-east-1",
-	//					"namespace": "custom",
-	//					"metricName": "CPUUtilization",
-	//					"statistic": "Average",
-	//					"prefixMatching": true,
-	//					"dimensions": {"key":"value"},
-	//					"period": 180,
-	//					"actionPrefix": "action_prefix",
-	//					"alarmNamePrefix": "alarm_name_prefix"
-	//				}`),
-	//			},
-	//		},
-	//	})
-	//	require.NoError(t, err)
-	//
-	//	assert.Equal(t,
-	//		&backend.QueryDataResponse{
-	//			Responses: backend.Responses{
-	//				"": {
-	//					Frames: data.Frames{data.NewFrame("",
-	//						data.NewField("time", nil, []string{}),
-	//						data.NewField("title", nil, []string{}),
-	//						data.NewField("tags", nil, []string{}),
-	//						data.NewField("text", nil, []string{}),
-	//					).SetMeta(&data.FrameMeta{
-	//						Custom: map[string]interface{}{
-	//							"rowCount": 0,
-	//						},
-	//					})},
-	//				},
-	//			},
-	//		}, resp)
-	//})
+	t.Run("all json", func(t *testing.T) {
+		client = CWClientMock{}
+		client.On("DescribeAlarmsForMetric", &cloudwatch.DescribeAlarmsForMetricInput{
+			Namespace:  aws.String("custom"),
+			MetricName: aws.String("CPUUtilization"),
+			Statistic:  aws.String("Average"),
+			Period:     aws.Int64(300),
+		}).Return(&cloudwatch.DescribeAlarmsForMetricOutput{}, nil)
+		im := datasource.NewInstanceManager(func(s backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
+			return datasourceInfo{}, nil
+		})
+
+		executor := newExecutor(im, newTestConfig(), fakeSessionCache{})
+		resp, err := executor.QueryData(context.Background(), &backend.QueryDataRequest{
+			PluginContext: backend.PluginContext{
+				DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
+			},
+			Queries: []backend.DataQuery{
+				{
+					JSON: json.RawMessage(`{
+								"type":    "annotationQuery",
+								"region":    "us-east-1",
+								"namespace": "custom",
+								"metricName": "CPUUtilization",
+								"statistic": "Average",
+								"prefixMatching": true,
+								"dimensions": {"key":"value"},
+								"period": 180,
+								"actionPrefix": "action_prefix",
+								"alarmNamePrefix": "alarm_name_prefix"
+							}`),
+				},
+			},
+		})
+		require.NoError(t, err)
+
+		assert.Equal(t,
+			&backend.QueryDataResponse{
+				Responses: backend.Responses{
+					"": {
+						Frames: data.Frames{data.NewFrame("",
+							data.NewField("time", nil, []string{}),
+							data.NewField("title", nil, []string{}),
+							data.NewField("tags", nil, []string{}),
+							data.NewField("text", nil, []string{}),
+						).SetMeta(&data.FrameMeta{
+							Custom: map[string]interface{}{
+								"rowCount": 0,
+							},
+						})},
+					},
+				},
+			}, resp)
+	})
 }
 
 type CWClientMock struct {
