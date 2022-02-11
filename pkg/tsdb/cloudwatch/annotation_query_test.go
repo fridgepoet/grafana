@@ -12,9 +12,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
-	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,19 +28,13 @@ func TestQuery_AnnotationQuery(t *testing.T) {
 	}
 
 	t.Run("minimal case", func(t *testing.T) {
-		client = CWClientMock{}
-		client.On("DescribeAlarmsForMetric", &cloudwatch.DescribeAlarmsForMetricInput{
-			Namespace:  aws.String("custom"),
-			MetricName: aws.String("CPUUtilization"),
-			Statistic:  aws.String("Average"),
-			Period:     aws.Int64(300),
-		}).Return(&cloudwatch.DescribeAlarmsForMetricOutput{}, nil)
+		client = CWClientMock{describeAlarmsForMetricOutput: &cloudwatch.DescribeAlarmsForMetricOutput{}}
 		im := datasource.NewInstanceManager(func(s backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
 			return datasourceInfo{}, nil
 		})
 
 		executor := newExecutor(im, newTestConfig(), fakeSessionCache{})
-		resp, err := executor.QueryData(context.Background(), &backend.QueryDataRequest{
+		_, err := executor.QueryData(context.Background(), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{
 				DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
 			},
@@ -60,92 +52,30 @@ func TestQuery_AnnotationQuery(t *testing.T) {
 		})
 		require.NoError(t, err)
 
-		assert.Equal(t,
-			&backend.QueryDataResponse{
-				Responses: backend.Responses{
-					"": {
-						Frames: data.Frames{data.NewFrame("",
-							data.NewField("time", nil, []string{}),
-							data.NewField("title", nil, []string{}),
-							data.NewField("tags", nil, []string{}),
-							data.NewField("text", nil, []string{}),
-						).SetMeta(&data.FrameMeta{
-							Custom: map[string]interface{}{
-								"rowCount": 0,
-							},
-						})},
-					},
-				},
-			}, resp)
-	})
-
-	t.Run("all json", func(t *testing.T) {
-		client = CWClientMock{}
-		client.On("DescribeAlarmsForMetric", &cloudwatch.DescribeAlarmsForMetricInput{
+		require.Len(t, client.calls.DescribeAlarmsForMetric, 1)
+		assert.Equal(t, &cloudwatch.DescribeAlarmsForMetricInput{
 			Namespace:  aws.String("custom"),
 			MetricName: aws.String("CPUUtilization"),
 			Statistic:  aws.String("Average"),
 			Period:     aws.Int64(300),
-		}).Return(&cloudwatch.DescribeAlarmsForMetricOutput{}, nil)
-		im := datasource.NewInstanceManager(func(s backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
-			return datasourceInfo{}, nil
-		})
-
-		executor := newExecutor(im, newTestConfig(), fakeSessionCache{})
-		resp, err := executor.QueryData(context.Background(), &backend.QueryDataRequest{
-			PluginContext: backend.PluginContext{
-				DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
-			},
-			Queries: []backend.DataQuery{
-				{
-					JSON: json.RawMessage(`{
-								"type":    "annotationQuery",
-								"region":    "us-east-1",
-								"namespace": "custom",
-								"metricName": "CPUUtilization",
-								"statistic": "Average",
-								"prefixMatching": true,
-								"dimensions": {"key":"value"},
-								"period": 180,
-								"actionPrefix": "action_prefix",
-								"alarmNamePrefix": "alarm_name_prefix"
-							}`),
-				},
-			},
-		})
-		require.NoError(t, err)
-
-		assert.Equal(t,
-			&backend.QueryDataResponse{
-				Responses: backend.Responses{
-					"": {
-						Frames: data.Frames{data.NewFrame("",
-							data.NewField("time", nil, []string{}),
-							data.NewField("title", nil, []string{}),
-							data.NewField("tags", nil, []string{}),
-							data.NewField("text", nil, []string{}),
-						).SetMeta(&data.FrameMeta{
-							Custom: map[string]interface{}{
-								"rowCount": 0,
-							},
-						})},
-					},
-				},
-			}, resp)
+		}, client.calls.DescribeAlarmsForMetric[0])
 	})
 }
 
 type CWClientMock struct {
 	cloudwatchiface.CloudWatchAPI
-	mock.Mock
+	calls calls
+
+	describeAlarmsForMetricOutput *cloudwatch.DescribeAlarmsForMetricOutput
+
+	DescribeAlarmsForMetricOverride func(params *cloudwatch.DescribeAlarmsForMetricInput) (*cloudwatch.DescribeAlarmsForMetricOutput, error)
+}
+
+type calls struct {
+	DescribeAlarmsForMetric []*cloudwatch.DescribeAlarmsForMetricInput
 }
 
 func (c *CWClientMock) DescribeAlarmsForMetric(params *cloudwatch.DescribeAlarmsForMetricInput) (*cloudwatch.DescribeAlarmsForMetricOutput, error) {
-	args := c.Called(params)
-	return args.Get(0).(*cloudwatch.DescribeAlarmsForMetricOutput), args.Error(1)
-}
-
-func (c *CWClientMock) DescribeAlarms(params *cloudwatch.DescribeAlarmsInput) (*cloudwatch.DescribeAlarmsOutput, error) {
-	args := c.Called(params)
-	return args.Get(0).(*cloudwatch.DescribeAlarmsOutput), args.Error(1)
+	c.calls.DescribeAlarmsForMetric = append(c.calls.DescribeAlarmsForMetric, params)
+	return c.describeAlarmsForMetricOutput, nil
 }
