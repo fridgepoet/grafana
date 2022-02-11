@@ -2,6 +2,7 @@ package cloudwatch
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -133,6 +134,7 @@ func filterAlarms(alarms *cloudwatch.DescribeAlarmsOutput, namespace string, met
 	dimensions map[string]interface{}, statistic string, period int64) []*string {
 	alarmNames := make([]*string, 0)
 
+	fmt.Println("metric alarms", alarms.MetricAlarms)
 	for _, alarm := range alarms.MetricAlarms {
 		if namespace != "" && *alarm.Namespace != namespace {
 			continue

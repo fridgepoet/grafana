@@ -82,10 +82,15 @@ func (c FakeCWClient) ListMetricsPages(input *cloudwatch.ListMetricsInput, fn fu
 type FakeCWAnnotationsClient struct {
 	cloudwatchiface.CloudWatchAPI
 	cloudwatch.DescribeAlarmsForMetricOutput
+	cloudwatch.DescribeAlarmsOutput
 }
 
 func (c FakeCWAnnotationsClient) DescribeAlarmsForMetric(params *cloudwatch.DescribeAlarmsForMetricInput) (*cloudwatch.DescribeAlarmsForMetricOutput, error) {
 	return &c.DescribeAlarmsForMetricOutput, nil
+}
+
+func (c FakeCWAnnotationsClient) DescribeAlarms(*cloudwatch.DescribeAlarmsInput) (*cloudwatch.DescribeAlarmsOutput, error) {
+	return &c.DescribeAlarmsOutput, nil
 }
 
 type fakeEC2Client struct {
